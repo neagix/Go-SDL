@@ -703,7 +703,7 @@ func GetKeyName(key Key) string {
 // ======
 
 // Polls for currently pending events
-func (event *Event) poll() bool {
+func (event *Event) Poll() bool {
 	GlobalMutex.Lock()
 
 	var ret = C.SDL_PollEvent((*C.SDL_Event)(cast(event)))
