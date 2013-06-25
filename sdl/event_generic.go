@@ -25,10 +25,12 @@ const poll_interval_ms = 10
 // Polls SDL events in periodic intervals.
 // This function does not return.
 func pollEvents() {
-	for _, event := range PollEvents() {
-		events <- event
+	for {
+		for _, event := range PollEvents() {
+			events <- event
+		}
+		time.Sleep(poll_interval_ms * 1e6)
 	}
-	time.Sleep(poll_interval_ms * 1e6)
 }
 
 func init() {
