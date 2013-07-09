@@ -554,7 +554,7 @@ func Load(file string) *Surface {
 func Load_RW(rwOps *RWops) *Surface {
 	GlobalMutex.Lock()
 
-	var screen = C.IMG_Load_RW((*C.SDL_RWops)(cast(rwOps.cRWops)), 0)
+	var screen = C.IMG_Load_RW((*C.SDL_RWops)(cast(rwOps.CRWops)), 0)
 
 	GlobalMutex.Unlock()
 

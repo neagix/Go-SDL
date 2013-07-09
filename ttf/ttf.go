@@ -17,6 +17,8 @@ import (
 	"unsafe"
 )
 
+type cast unsafe.Pointer
+
 // The version of Go-SDL TTF bindings.
 // The version descriptor changes into a new unique string
 // after a semantically incompatible Go-SDL update.
@@ -43,7 +45,7 @@ func wrap(cSurface *C.SDL_Surface) *sdl.Surface {
 	return s
 }
 
-func wrapFont(cFont *C.SDL_Font) *Font {
+func wrapFont(cfont *C.TTF_Font) *Font {
 	if cfont == nil {
 		return nil
 	}
@@ -92,11 +94,11 @@ func OpenFont(file string, ptsize int) *Font {
 }
 
 // Loads a font from an RWops at the specified point size.
-func OpenFontRW(rwOps RWops, ptsize int) *Font {
+func OpenFontRW(rwOps sdl.RWops, ptsize int) *Font {
 	sdl.GlobalMutex.Lock()
 	defer sdl.GlobalMutex.Unlock()
 
-	return wrapFont(C.TTF_OpenFontRW((*C.SDL_RWops)(cast(rwOps.cRWops)), 0, C.int(ptsize))_
+	return wrapFont(C.TTF_OpenFontRW((*C.SDL_RWops)(cast(rwOps.CRWops)), 0, C.int(ptsize)))
 }
 
 // Loads a font from a file containing multiple font faces at the specified
@@ -114,11 +116,11 @@ func OpenFontIndex(file string, ptsize, index int) *Font {
 
 // Loads a font from an RWops containing multiple font faces at the specified
 // point size.
-func OpenFontIndexRW(rwOps RWops, ptsize, index int) *Font {
+func OpenFontIndexRW(rwOps sdl.RWops, ptsize, index int) *Font {
 	sdl.GlobalMutex.Lock()
 	defer sdl.GlobalMutex.Unlock()
 
-	return wrapFont(C.TTF_OpenFontIndexRW((*C.SDL_RWops)(cast(rwOps.cRWops)), 0, C.int(ptsize), C.long(index)))
+	return wrapFont(C.TTF_OpenFontIndexRW((*C.SDL_RWops)(cast(rwOps.CRWops)), 0, C.int(ptsize), C.long(index)))
 }
 
 // Frees the pointer to the font.
