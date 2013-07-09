@@ -1,6 +1,6 @@
 # Introduction
 
-This is an improved version of neagix's improved verison of 0xe2-0x9a-0x9b's [Go-SDL](https://github.com/0xe2-0x9a-0x9b/Go-SDL).
+This is an improved version of neagix's improved version of 0xe2-0x9a-0x9b's [Go-SDL](https://github.com/0xe2-0x9a-0x9b/Go-SDL).
 
 The improvements over/differences to neagix's version are:
 
