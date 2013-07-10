@@ -8,7 +8,7 @@ func PollEvents() []interface{} {
 		var cookedEvent interface{}
 		switch event.Type {
 		case QUIT:
-			cookedEvent = (*QuitEvent)(cast(event))
+			cookedEvent = *(*QuitEvent)(cast(event))
 
 		case KEYDOWN, KEYUP:
 			cookedEvent = *(*KeyboardEvent)(cast(event))
