@@ -94,7 +94,7 @@ func OpenFont(file string, ptsize int) *Font {
 }
 
 // Loads a font from an RWops at the specified point size.
-func OpenFontRW(rwOps sdl.RWops, ptsize int) *Font {
+func OpenFontRW(rwOps *sdl.RWops, ptsize int) *Font {
 	sdl.GlobalMutex.Lock()
 	defer sdl.GlobalMutex.Unlock()
 
