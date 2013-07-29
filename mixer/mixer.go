@@ -12,10 +12,14 @@ package mixer
 import "C"
 import "unsafe"
 
+import "github.com/asig/Go-SDL/sdl"
+
 // A music file.
 type Music struct {
 	cmusic *C.Mix_Music
 }
+
+type cast unsafe.Pointer
 
 // Initializes SDL_mixer.  Return 0 if successful and -1 if there were
 // initialization errors.
@@ -37,6 +41,15 @@ func LoadMUS(file string) *Music {
 		return nil
 	}
 
+	return &Music{cmusic}
+}
+
+// Loads a music file to use.
+func LoadMUS_RW(rwOps *sdl.RWops) *Music {
+	cmusic := C.Mix_LoadMUS_RW((*C.SDL_RWops)(cast(rwOps.CRWops)))
+	if cmusic == nil {
+		return nil
+	}
 	return &Music{cmusic}
 }
 
