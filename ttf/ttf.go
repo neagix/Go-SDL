@@ -116,7 +116,7 @@ func OpenFontIndex(file string, ptsize, index int) *Font {
 
 // Loads a font from an RWops containing multiple font faces at the specified
 // point size.
-func OpenFontIndexRW(rwOps sdl.RWops, ptsize, index int) *Font {
+func OpenFontIndexRW(rwOps *sdl.RWops, ptsize, index int) *Font {
 	sdl.GlobalMutex.Lock()
 	defer sdl.GlobalMutex.Unlock()
 
