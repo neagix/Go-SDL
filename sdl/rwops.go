@@ -9,13 +9,13 @@ import (
 import "C"
 
 type RWops struct {
-	cRWops *C.SDL_RWops
+	CRWops *C.SDL_RWops
 
 	gcBytes []byte // Prevents garbage collection of memory passed to RWFromMem
 }
 
 func (s *RWops) destroy() {
-	s.cRWops = nil
+	s.CRWops = nil
 	s.gcBytes = nil
 }
 
@@ -26,7 +26,7 @@ func RWFromMem(buf []byte) *RWops {
 
 	p := C.SDL_RWFromMem(unsafe.Pointer(&buf[0]), C.int(len(buf)))
 	var rwops RWops
-	rwops.cRWops = (*C.SDL_RWops)(p)
+	rwops.CRWops = (*C.SDL_RWops)(p)
 	rwops.gcBytes = buf
 	return &rwops
 
@@ -36,7 +36,7 @@ func (self *RWops) Free() {
 	GlobalMutex.Lock()
 	defer GlobalMutex.Unlock()
 
-	C.SDL_FreeRW(self.cRWops)
-	self.cRWops = nil
+	C.SDL_FreeRW(self.CRWops)
+	self.CRWops = nil
 	self.gcBytes = nil
 }

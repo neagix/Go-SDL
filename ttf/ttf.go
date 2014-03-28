@@ -12,10 +12,12 @@ package ttf
 import "C"
 
 import (
-	"github.com/neagix/Go-SDL/sdl"
+	"github.com/asig/Go-SDL/sdl"
 	"sync"
 	"unsafe"
 )
+
+type cast unsafe.Pointer
 
 // The version of Go-SDL TTF bindings.
 // The version descriptor changes into a new unique string
@@ -41,6 +43,13 @@ func wrap(cSurface *C.SDL_Surface) *sdl.Surface {
 	}
 
 	return s
+}
+
+func wrapFont(cfont *C.TTF_Font) *Font {
+	if cfont == nil {
+		return nil
+	}
+	return &Font{cfont: cfont}
 }
 
 // A ttf or otf font.
@@ -75,47 +84,53 @@ func Quit() {
 // Loads a font from a file at the specified point size.
 func OpenFont(file string, ptsize int) *Font {
 	sdl.GlobalMutex.Lock()
+	defer sdl.GlobalMutex.Unlock()
 
 	cfile := C.CString(file)
 	cfont := C.TTF_OpenFont(cfile, C.int(ptsize))
 	C.free(unsafe.Pointer(cfile))
 
-	sdl.GlobalMutex.Unlock()
+	return wrapFont(cfont)
+}
 
-	if cfont == nil {
-		return nil
-	}
+// Loads a font from an RWops at the specified point size.
+func OpenFontRW(rwOps *sdl.RWops, ptsize int) *Font {
+	sdl.GlobalMutex.Lock()
+	defer sdl.GlobalMutex.Unlock()
 
-	return &Font{cfont: cfont}
+	return wrapFont(C.TTF_OpenFontRW((*C.SDL_RWops)(cast(rwOps.CRWops)), 0, C.int(ptsize)))
 }
 
 // Loads a font from a file containing multiple font faces at the specified
 // point size.
 func OpenFontIndex(file string, ptsize, index int) *Font {
 	sdl.GlobalMutex.Lock()
+	defer sdl.GlobalMutex.Unlock()
 
 	cfile := C.CString(file)
 	cfont := C.TTF_OpenFontIndex(cfile, C.int(ptsize), C.long(index))
 	C.free(unsafe.Pointer(cfile))
 
-	sdl.GlobalMutex.Unlock()
+	return wrapFont(cfont)
+}
 
-	if cfont == nil {
-		return nil
-	}
+// Loads a font from an RWops containing multiple font faces at the specified
+// point size.
+func OpenFontIndexRW(rwOps *sdl.RWops, ptsize, index int) *Font {
+	sdl.GlobalMutex.Lock()
+	defer sdl.GlobalMutex.Unlock()
 
-	return &Font{cfont: cfont}
+	return wrapFont(C.TTF_OpenFontIndexRW((*C.SDL_RWops)(cast(rwOps.CRWops)), 0, C.int(ptsize), C.long(index)))
 }
 
 // Frees the pointer to the font.
 func (f *Font) Close() {
 	sdl.GlobalMutex.Lock()
+	defer sdl.GlobalMutex.Unlock()
 	f.mutex.Lock()
+	defer f.mutex.Unlock()
 
 	C.TTF_CloseFont(f.cfont)
-
-	f.mutex.Unlock()
-	sdl.GlobalMutex.Unlock()
 }
 
 // Renders Latin-1 text in the specified color and returns an SDL surface.  Solid

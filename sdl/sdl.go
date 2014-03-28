@@ -554,7 +554,7 @@ func Load(file string) *Surface {
 func Load_RW(rwOps *RWops) *Surface {
 	GlobalMutex.Lock()
 
-	var screen = C.IMG_Load_RW((*C.SDL_RWops)(cast(rwOps.cRWops)), 0)
+	var screen = C.IMG_Load_RW((*C.SDL_RWops)(cast(rwOps.CRWops)), 0)
 
 	GlobalMutex.Unlock()
 
@@ -703,7 +703,7 @@ func GetKeyName(key Key) string {
 // ======
 
 // Polls for currently pending events
-func (event *Event) poll() bool {
+func (event *Event) Poll() bool {
 	GlobalMutex.Lock()
 
 	var ret = C.SDL_PollEvent((*C.SDL_Event)(cast(event)))
